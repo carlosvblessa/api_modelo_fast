@@ -233,5 +233,5 @@ def list_predictions(
 
 # Executar aplicação
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("api_modelo_fast:app", host="0.0.0.0", port=10000, reload=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=True)
