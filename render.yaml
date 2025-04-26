@@ -16,7 +16,7 @@ services:
       -b 0.0.0.0:$PORT
     envVars:                    # variáveis de ambiente
       - key: JWT_SECRET
-        fromSecret: jwt_secret      # crie este Secret no painel do Render
+        value: JWT_PLACEHOLDER      
       - key: DB_URL
         value: sqlite:///predictions.db
       - key: PORT
