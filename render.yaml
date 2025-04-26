@@ -1,7 +1,7 @@
 # render.yaml
 
 services:
-  - type: web_service           # tipo de serviço no Render
+  - type: web                 # tipo de serviço no Render
     name: iris-fastapi         # nome que aparecerá no dashboard
     env: python                # runtime Python
     region: oregon             # data center (ex: oregon, frankfurt, ireland…)
