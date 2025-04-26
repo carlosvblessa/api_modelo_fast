@@ -1,0 +1,23 @@
+# render.yaml
+
+services:
+  - type: web_service           # tipo de serviço no Render
+    name: iris-fastapi         # nome que aparecerá no dashboard
+    env: python                # runtime Python
+    region: oregon             # data center (ex: oregon, frankfurt, ireland…)
+    branch: main               # branch que dispara o build/deploy
+    plan: free                 # plano de recurso (free, starter, pro…)
+    buildCommand: |            # comandos para instalar dependências
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: >            # comando para iniciar seu FastAPI
+      gunicorn api_modelo_fast:app
+      -k uvicorn.workers.UvicornWorker
+      -b 0.0.0.0:$PORT
+    envVars:                    # variáveis de ambiente
+      - key: JWT_SECRET
+        fromSecret: jwt_secret      # crie este Secret no painel do Render
+      - key: DB_URL
+        value: sqlite:///predictions.db
+      - key: PORT
+        value: "10000"              # opcional, só para tornar explícito
