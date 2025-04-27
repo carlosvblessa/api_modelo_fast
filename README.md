@@ -123,7 +123,7 @@ Para rodar esta API localmente, você precisará dos seguintes itens instalados:
 ## Instalação
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/api_modelo_fast.git
+   git clone https://github.com/carlosvblessa/api_modelo_fast.git
    cd api_modelo_fast
    ```
 
@@ -141,15 +141,15 @@ Para rodar esta API localmente, você precisará dos seguintes itens instalados:
 
 4. Execute a API:
    ```bash
-   python api_modelo_fast.py
+   gunicorn api_modelo_fast:app --reload -k uvicorn.workers.UvicornWorker -b 127.0.0.1:8000
    ```
 
-A API estará disponível em `http://localhost:8000`.
+A API estará disponível em `http://127.0.0.1:8000`.
 
 ---
 
 ## Uso
-- Para testar a API, você pode usar ferramentas como [Postman](https://www.postman.com/) ou [cURL](https://curl.se/).
+- Para testar a API, você pode usar ferramentas como [Postman](https://www.postman.com/) ou [cURL](https://curl.se/) ainda em http://127.0.0.1:8000/docs.
 
 ---
 
