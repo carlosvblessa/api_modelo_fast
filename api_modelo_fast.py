@@ -7,6 +7,7 @@ import numpy as np
 from typing import List, Tuple
 
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Body
+from fastapi.responses import HTMLResponse 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, Float, DateTime
@@ -88,6 +89,10 @@ class PredictionDBResponse(BaseModel):
     petal_width: float
     predicted_class: int
     created_at: datetime.datetime
+
+class HealthResponse(BaseModel):
+    status: str
+    db: str
 
 # Funções utilitárias
 
@@ -230,3 +235,86 @@ def list_predictions(
     )
     db.close()
     return preds
+
+@app.get(
+    "/",
+    summary="Página inicial da API",
+    tags=["Raiz"],
+    response_class=HTMLResponse,
+    responses={
+        200: {
+            "description": "Página HTML de boas-vindas",
+            "content": {
+                "text/html": {
+                    "example": """
+<!DOCTYPE html>
+<html lang='pt-BR'>
+...
+</html>"""
+                }
+            },
+        }
+    }
+)
+def root(request: Request):
+    base = str(request.base_url).rstrip("/")
+    docs_url = f"{base}/docs"
+    redoc_url = f"{base}/redoc"
+    year = datetime.datetime.utcnow().year
+    html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>API Iris Prediction</title></head>
+<body>
+  <h1>🌼 Bem-vindo à API de Previsão Iris com FastAPI!</h1>
+   <h2>🔗 Endpoints Disponíveis:</h2>
+  <ul>
+    <li><code>GET  /</code>            – Gera esta página HTML</li>
+    <li><code>POST /login</code>       – Autenticação e geração de token JWT</li>
+    <li><code>POST /predict</code>     – Realizar predição (protegido por token JWT)</li>
+    <li><code>GET  /predictions</code> – Listar predições (protegido por token JWT)</li>
+    <li><code>GET  /health</code>      – Verificar status da API e do Banco</li>
+  </ul>
+
+  <h2>📄 Documentação Interativa:</h2>
+    <p>
+    <a href="{docs_url}" target="_blank">Acesse o Swagger UI</a><br/>
+    <a href="{redoc_url}" target="_blank">Acesse o ReDoc UI</a>
+  </p>
+  
+  <div class="footer">
+    &copy; {year} API Iris – Desenvolvido com Python + FastApi
+  </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html, status_code=200)
+
+
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    summary="Health check da API e do banco",
+    tags=["Infra"],
+    responses={
+        200: {
+            "description": "Status de saúde da API e do banco",
+            "content": {
+                "application/json": {
+                    "example": {"status": "OK", "db": "up"}
+                }
+            },
+        }
+    }
+)
+def health():
+    try:
+        conn = engine.connect()
+        conn.close()
+        db_status = "up"
+    except Exception as e:
+        logger.error("Health DB error: %s", e)
+        db_status = "down"
+
+    return {
+        "status": "OK" if db_status == "up" else "FAIL",
+        "db": db_status
+    }

@@ -1,12 +1,13 @@
 # render.yaml
 
 services:
-  - type: web                 # tipo de serviço no Render
+  - type: web                  # tipo de serviço no Render
     name: iris-fastapi         # nome que aparecerá no dashboard
     env: python                # runtime Python
     region: oregon             # data center (ex: oregon, frankfurt, ireland…)
     branch: main               # branch que dispara o build/deploy
     plan: free                 # plano de recurso (free, starter, pro…)
+    healthCheckPath: "/health" # endpoint para health checks
     buildCommand: |            # comandos para instalar dependências
       pip install --upgrade pip
       pip install -r requirements.txt
@@ -14,10 +15,12 @@ services:
       gunicorn api_modelo_fast:app
       -k uvicorn.workers.UvicornWorker
       -b 0.0.0.0:$PORT
-    envVars:                    # variáveis de ambiente
+    envVars:                   # variáveis de ambiente
+      - key: PYTHON_VERSION
+        value: 3.10.12      
       - key: JWT_SECRET
         value: JWT_PLACEHOLDER      
       - key: DB_URL
         value: sqlite:///predictions.db
       - key: PORT
-        value: "10000"              # opcional, só para tornar explícito
+        value: "10000"         # opcional, só para tornar explícito
