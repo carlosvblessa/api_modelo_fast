@@ -3,6 +3,22 @@
 ## Descrição
 Esta é uma API Fast que realiza autenticação e predições usando um modelo de aprendizado de máquina treinado com o conjunto de dados Iris. A API utiliza tokens Bearer para proteger endpoints sensíveis, garantindo segurança nas operações.
 
+---
+
+## Estrutura do projeto
+
+```
+api_modelo_fast/
+├── api_modelo_fast.py  # Endpoints e submissão dos dados ao modelo
+├── modelo_iris_LR.pkl  # Modelo de Regressão Logística para classificar as espécies
+├── predictions.db      # Base de dados SQLite com as predições
+├── README.md           # Instruções do projeto
+├── LICENSE             # MIT license
+├── render.yaml         # Parâmetros de inicialização para o render
+├── requirements.txt    # Dependências do projeto
+└── .gitignore          # Ignora arquivos desnecessários
+
+```
 
 ---
 
